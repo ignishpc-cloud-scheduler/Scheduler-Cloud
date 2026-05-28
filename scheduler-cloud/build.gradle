@@ -1,0 +1,49 @@
+plugins {
+    id('java')
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+javadoc {
+    (options as StandardJavadocDocletOptions).addBooleanOption('html5', true)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(":scheduler-api"))
+    implementation(group: 'org.slf4j', name: 'slf4j-api', version: '2.0.9')
+
+    implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+    implementation("software.amazon.awssdk:ec2")
+    implementation("software.amazon.awssdk:s3")
+    implementation("software.amazon.awssdk:ssm")
+    implementation("software.amazon.awssdk:ecr:2.25.0")
+
+    implementation(group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.0')
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.16.0'
+
+
+    //implementation(group: 'com.github.docker-java', name: 'docker-java-core', version: '3.3.4')
+    //implementation(group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.3.4')
+}
+
+jar {
+    archiveBaseName = 'ignis-scheduler-cloud'
+    version = file("../VERSION").text.trim()
+    manifest {
+        attributes("Implementation-Title": archiveBaseName,
+                "Implementation-Version": version)
+    }
+}
